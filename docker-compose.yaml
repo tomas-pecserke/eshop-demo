@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: aQ6HSQyyRexLG7uUtqCJbRQP
+      MYSQL_DATABASE: animal_eshop
+      MYSQL_USER: animal_eshop
+      MYSQL_PASSWORD: SGPEuTkTLyB33VgpaYDs5PVF
+    networks:
+      - backend
+
+  app:
+    build: .
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:mariadb://db:3306/animal_eshop'
+      SPRING_DATASOURCE_USERNAME: animal_eshop
+      SPRING_DATASOURCE_PASSWORD: SGPEuTkTLyB33VgpaYDs5PVF
+    depends_on:
+      - db
+    ports:
+      - '8080:8080'
+    networks:
+      - backend
+
+networks:
+  backend:
