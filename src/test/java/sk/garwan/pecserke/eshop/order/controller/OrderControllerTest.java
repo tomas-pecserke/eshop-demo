@@ -91,6 +91,18 @@ class OrderControllerTest {
     }
 
     @Test
+    void createNotAuthenticated() throws Exception {
+        mvc
+            .perform(
+                post("/orders")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"items\":[{\"product\":1,\"count\":2}]}")
+            )
+            .andDo(log())
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     @Transactional
     void my() throws Exception {
         var user = userRepository.getOne(userService.createUser(

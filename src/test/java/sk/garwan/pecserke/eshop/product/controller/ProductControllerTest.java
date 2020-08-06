@@ -131,4 +131,31 @@ class ProductControllerTest {
         assertThat(product.getCategories().size()).isEqualTo(1);
         assertThat(product.getCategories().iterator().next().getName()).isEqualTo("other");
     }
+
+    @Test
+    @Transactional
+    void createNotAdmin() throws Exception {
+        mvc
+            .perform(
+                post("/products")
+                    .with(user("test_user").password("test_user"))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"name\":\"Created Product\",\"price\":123.4,\"categories\":[\"other\"]}")
+            )
+            .andDo(log())
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @Transactional
+    void createNotAuthenticated() throws Exception {
+        mvc
+            .perform(
+                post("/products")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"name\":\"Created Product\",\"price\":123.4,\"categories\":[\"other\"]}")
+            )
+            .andDo(log())
+            .andExpect(status().isUnauthorized());
+    }
 }
